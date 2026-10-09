@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HRIS — Human Resources Information System</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #16213e;
+      color: #fff;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+    }
+
+    nav .brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+    }
+
+    /* LAYOUT */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* FORMS */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: .9rem;
+      outline: none;
+      transition: border .2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #4361ee;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, .15);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 600;
+      transition: opacity .2s, transform .1s;
+    }
+
+    .btn:hover {
+      opacity: .9;
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    .btn-primary {
+      background: #4361ee;
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: #ef233c;
+      color: #fff;
+    }
+
+    .btn-success {
+      background: #2ecc71;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: .8rem;
+    }
+
+    .error-msg {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: .85rem;
+      margin-top: 12px;
+    }
+
+    /* TOOLBAR */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 9px 12px 9px 36px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: .9rem;
+    }
+
+    .search-wrap::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .85rem;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .toggle-label input[type=checkbox] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .badge-active {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-terminated {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* TABLE */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f8fafc;
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: .8rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    td {
+      padding: 13px 16px;
+      font-size: .875rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr.clickable:hover td {
+      background: #f8fafc;
+      cursor: pointer;
+    }
+
+    .emp-name {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .emp-sub {
+      font-size: .78rem;
+      color: #64748b;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px;
+      color: #94a3b8;
+      font-size: .9rem;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      width: 520px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, .2);
+    }
+
+    .modal h3 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #16213e;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* DETAIL PANEL */
+    #detail-panel {
+      display: none;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      background: #4361ee;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .detail-meta {
+      flex: 1;
+    }
+
+    .detail-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #16213e;
+    }
+
+    .detail-title {
+      font-size: .9rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: .875rem;
+      font-weight: 600;
+      color: #64748b;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color .2s;
+    }
+
+    .tab.active {
+      color: #4361ee;
+      border-bottom-color: #4361ee;
+    }
+
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field-item {}
+
+    .field-label {
+      font-size: .75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 3px;
+    }
+
+    .field-value {
+      font-size: .9rem;
+      color: #1e293b;
+    }
+
+    .field-value.null {
+      color: #cbd5e1;
+      font-style: italic;
+    }
+
+    /* HISTORY TABLE */
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .8rem;
+    }
+
+    .history-table th {
+      background: #f8fafc;
+      padding: 8px 10px;
+      text-align: left;
+      color: #64748b;
+      font-size: .75rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .history-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .history-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* BACK BUTTON */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #4361ee;
+      font-size: .875rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* LOADING */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e2e8f0;
+      border-top-color: #4361ee;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="brand">HRIS</div>
+  </nav>
+
+  <div id="main-page">
+    <div class="container">
+
+      <!-- EMPLOYEE LIST -->
+      <div id="list-panel">
+        <div id="list-error" class="error-msg" style="display:none"></div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <input id="search-input" type="text" placeholder="Search employees..." oninput="debounceSearch()">
+          </div>
+          <label class="toggle-label">
+            <input id="include-terminated" type="checkbox" onchange="loadEmployees()">
+            Include terminated
+          </label>
+          <button class="btn btn-success btn-sm" onclick="openHireModal()">+ Hire Employee</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Title / Department</th>
+                <th>Email</th>
+                <th>Start Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="employee-tbody">
+              <tr>
+                <td colspan="5">
+                  <div class="loading-wrap">
+                    <div class="spinner"></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DETAIL PANEL -->
+      <div id="detail-panel">
+        <button class="back-btn" onclick="showList()">&#8592; Back to List</button>
+        <div class="card" style="padding: 24px;">
+          <div class="detail-header">
+            <div class="avatar" id="detail-avatar"></div>
+            <div class="detail-meta">
+              <div class="detail-name" id="detail-name"></div>
+              <div class="detail-title" id="detail-title-dept"></div>
+            </div>
+            <div class="detail-actions">
+              <span id="detail-status-badge"></span>
+              <button class="btn btn-secondary btn-sm" id="edit-btn" onclick="openEditModal()">Edit</button>
+              <button class="btn btn-danger btn-sm" id="terminate-btn" onclick="confirmTerminate()">Terminate</button>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <div class="tab active" onclick="showTab('details')">Details</div>
+            <div class="tab" onclick="showTab('history')">History</div>
+          </div>
+
+          <!-- Details Tab -->
+          <div id="tab-details">
+            <div class="fields-grid">
+              <div class="field-item">
+                <div class="field-label">Employee ID</div>
+                <div class="field-value" id="d-id"></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">Company ID</div>
+                <div class="field-value" id="d-company"></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">Email</div>
+                <div class="field-value" id="d-email"></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">Department</div>
+                <div class="field-value" id="d-dept"></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">Manager ID</div>
+                <div class="field-value" id="d-manager"></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">Salary</div>
+                <div class="field-value" id="d-salary"></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">Start Date</div>
+                <div class="field-value" id="d-start"></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">End Date</div>
+                <div class="field-value" id="d-end"></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- History Tab -->
+          <div id="tab-history" style="display:none">
+            <div id="history-content">
+              <div class="loading-wrap">
+                <div class="spinner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HIRE MODAL -->
+  <div class="modal-overlay" id="hire-modal">
+    <div class="modal">
+      <h3>Hire New Employee</h3>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input id="h-first_name" type="text" placeholder="Jane">
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input id="h-last_name" type="text" placeholder="Doe">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input id="h-email" type="email" placeholder="jane@company.com">
+      </div>
+      <div class="form-group">
+        <label>Start Date *</label>
+        <input id="h-start_date" type="date">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Title</label>
+          <input id="h-title" type="text" placeholder="Engineer">
+        </div>
+        <div class="form-group">
+          <label>Department</label>
+          <input id="h-department" type="text" placeholder="Engineering">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Manager ID</label>
+          <input id="h-manager_id" type="number" placeholder="(optional)">
+        </div>
+        <div class="form-group">
+          <label>Salary</label>
+          <input id="h-salary" type="text" placeholder="75000.00">
+        </div>
+      </div>
+      <div id="hire-error" class="error-msg" style="display:none"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('hire-modal')">Cancel</button>
+        <button class="btn btn-success btn-sm" onclick="submitHire()">Hire</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <h3>Edit Employee</h3>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>First Name</label>
+          <input id="e-first_name" type="text">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input id="e-last_name" type="text">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input id="e-email" type="email">
+      </div>
+      <div class="form-group">
+        <label>Start Date</label>
+        <input id="e-start_date" type="date">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Title</label>
+          <input id="e-title" type="text">
+        </div>
+        <div class="form-group">
+          <label>Department</label>
+          <input id="e-department" type="text">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Manager ID</label>
+          <input id="e-manager_id" type="number">
+        </div>
+        <div class="form-group">
+          <label>Salary</label>
+          <input id="e-salary" type="text">
+        </div>
+      </div>
+
+      <div id="edit-error" class="error-msg" style="display:none"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('edit-modal')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="submitEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMINATE CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="terminate-modal" role="dialog" aria-modal="true"
+    aria-labelledby="terminate-modal-title">
+    <div class="modal">
+      <h3 id="terminate-modal-title">Terminate Employee</h3>
+      <p>Terminate <strong id="terminate-name"></strong>? This cannot be undone.</p>
+      <div id="terminate-error" class="error-msg" style="display:none"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('terminate-modal')">Cancel</button>
+        <button class="btn btn-danger btn-sm" id="confirm-terminate-btn"
+          onclick="terminateEmployee()">Terminate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = '';
+    let currentEmployee = null;
+    let searchTimer = null;
+
+    function isTerminated(e) { return e.end_date != null; }
+
+    // Datetimes are UTC on the wire (ISO-8601 with Z). Date pickers are local:
+    // convert datetime-local values with toUtcIso before sending, and UTC
+    // timestamps with formatLocal for display. Calendar dates (YYYY-MM-DD)
+    // stay as-is — converting them through UTC midnight shifts the date.
+    function toUtcIso(localDatetime) {
+      if (localDatetime == null || localDatetime === '') return null;
+      const d = new Date(localDatetime);
+      if (Number.isNaN(d.getTime())) return null;
+      return d.toISOString();
+    }
+
+    function formatLocal(utcIso) {
+      if (utcIso == null || utcIso === '') return '—';
+      const d = new Date(utcIso);
+      if (Number.isNaN(d.getTime())) return String(utcIso);
+      return d.toLocaleString();
+    }
+
+    // ====== EMPLOYEES LIST ======
+
+    async function loadEmployees() {
+      const q = document.getElementById('search-input').value.trim();
+      const inc = document.getElementById('include-terminated').checked;
+      let url = `/employees?include_terminated=${inc}`;
+      if (q) url += `&q=${encodeURIComponent(q)}`;
+      const tbody = document.getElementById('employee-tbody');
+      tbody.innerHTML = `<tr><td colspan="5"><div class="loading-wrap"><div class="spinner"></div></div></td></tr>`;
+      try {
+        const res = await fetch(API + url);
+        if (!res.ok) { tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">Error loading employees</div></td></tr>`; return; }
+        const employees = await res.json();
+        renderEmployeeTable(employees);
+      } catch (ex) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">Network error</div></td></tr>`;
+      }
+    }
+
+    function renderEmployeeTable(employees) {
+      const tbody = document.getElementById('employee-tbody');
+      if (!employees.length) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">No employees found</div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = employees.map(e => `
+    <tr class="clickable" onclick="viewEmployee(${e.id})">
+      <td><div class="emp-name">${esc(e.full_name)}</div></td>
+      <td><div>${esc(e.title || '—')}</div><div class="emp-sub">${esc(e.department || '—')}</div></td>
+      <td>${esc(e.email)}</td>
+      <td>${esc(e.start_date || '—')}</td>
+      <td>${isTerminated(e) ? '<span class="badge badge-terminated">Terminated</span>' : '<span class="badge badge-active">Active</span>'}</td>
+    </tr>
+  `).join('');
+    }
+
+    function debounceSearch() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(loadEmployees, 300);
+    }
+
+    function showList() {
+      document.getElementById('list-panel').style.display = 'block';
+      document.getElementById('detail-panel').style.display = 'none';
+      loadEmployees();
+    }
+
+    // ====== EMPLOYEE DETAIL ======
+
+    function showListError(message) {
+      const errorEl = document.getElementById('list-error');
+      errorEl.textContent = message;
+      errorEl.style.display = message ? 'block' : 'none';
+    }
+
+    async function viewEmployee(id) {
+      showListError('');
+      try {
+        const res = await fetch(`${API}/employees/${id}`);
+        if (!res.ok) { showListError('Could not load employee.'); return; }
+        currentEmployee = await res.json();
+        renderDetail(currentEmployee);
+        document.getElementById('list-panel').style.display = 'none';
+        document.getElementById('detail-panel').style.display = 'block';
+        showTab('details');
+      } catch (ex) {
+        showListError('Network error');
+      }
+    }
+
+    function renderDetail(e) {
+      const initials = (e.first_name[0] + e.last_name[0]).toUpperCase();
+      document.getElementById('detail-avatar').textContent = initials;
+      document.getElementById('detail-name').textContent = e.full_name;
+      document.getElementById('detail-title-dept').textContent = [e.title, e.department].filter(Boolean).join(' — ');
+      const terminated = isTerminated(e);
+      document.getElementById('detail-status-badge').innerHTML = terminated
+        ? '<span class="badge badge-terminated">Terminated</span>'
+        : '<span class="badge badge-active">Active</span>';
+      document.getElementById('edit-btn').style.display = terminated ? 'none' : 'inline-flex';
+      document.getElementById('terminate-btn').style.display = terminated ? 'none' : 'inline-flex';
+      setField('d-id', e.id);
+      setField('d-company', e.company_id);
+      setField('d-email', e.email);
+      setField('d-dept', e.department);
+      setField('d-manager', e.manager_id);
+      setField('d-salary', e.salary ? '$' + e.salary : null);
+      setField('d-start', e.start_date);
+      setField('d-end', e.end_date);
+    }
+
+    function setField(id, val) {
+      const el = document.getElementById(id);
+      if (val == null || val === '') { el.textContent = '—'; el.classList.add('null'); }
+      else { el.textContent = val; el.classList.remove('null'); }
+    }
+
+    function showTab(name) {
+      document.querySelectorAll('.tab').forEach((t, i) => {
+        t.classList.toggle('active', (i === 0 && name === 'details') || (i === 1 && name === 'history'));
+      });
+      document.getElementById('tab-details').style.display = name === 'details' ? 'block' : 'none';
+      document.getElementById('tab-history').style.display = name === 'history' ? 'block' : 'none';
+      if (name === 'history') loadHistory(currentEmployee.id);
+    }
+
+    async function loadHistory(id) {
+      const el = document.getElementById('history-content');
+      el.innerHTML = '<div class="loading-wrap"><div class="spinner"></div></div>';
+      try {
+        const res = await fetch(`${API}/employees/${id}/history`);
+        const history = await res.json();
+        if (!history.length) { el.innerHTML = '<div class="empty-state">No history yet</div>'; return; }
+        el.innerHTML = `<div style="overflow-x:auto"><table class="history-table">
+      <thead><tr>
+        <th>Changed At</th><th>Title</th><th>Department</th>
+        <th>Salary</th><th>Manager ID</th><th>End Date</th>
+      </tr></thead>
+      <tbody>${history.map(h => `<tr>
+        <td>${esc(formatLocal(h.changed_at))}</td>
+        <td>${esc(h.title || '—')}</td>
+        <td>${esc(h.department || '—')}</td>
+        <td>${h.salary ? '$' + esc(h.salary) : '—'}</td>
+        <td>${h.manager_id != null ? h.manager_id : '—'}</td>
+        <td>${h.end_date ? esc(h.end_date) : '—'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+      } catch (ex) {
+        el.innerHTML = '<div class="empty-state">Error loading history</div>';
+      }
+    }
+
+    // ====== HIRE MODAL ======
+
+    function openHireModal() {
+      ['h-first_name', 'h-last_name', 'h-email', 'h-start_date', 'h-title', 'h-department', 'h-manager_id', 'h-salary'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('hire-error').style.display = 'none';
+      document.getElementById('hire-modal').classList.add('open');
+    }
+
+    async function submitHire() {
+      const body = {};
+      ['first_name', 'last_name', 'email', 'start_date', 'title', 'department', 'salary'].forEach(f => {
+        const v = document.getElementById('h-' + f).value.trim();
+        if (v) body[f] = v;
+      });
+      const mid = document.getElementById('h-manager_id').value.trim();
+      if (mid) body.manager_id = parseInt(mid);
+
+      const errEl = document.getElementById('hire-error');
+      errEl.style.display = 'none';
+      try {
+        const res = await fetch(`${API}/employees`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const data = await res.json();
+        if (!res.ok) { errEl.textContent = data.error || 'Failed to hire'; errEl.style.display = 'block'; return; }
+        closeModal('hire-modal');
+        loadEmployees();
+      } catch (ex) {
+        errEl.textContent = 'Network error'; errEl.style.display = 'block';
+      }
+    }
+
+    // ====== EDIT MODAL ======
+
+    function openEditModal() {
+      if (!currentEmployee) return;
+      const e = currentEmployee;
+      document.getElementById('e-first_name').value = e.first_name || '';
+      document.getElementById('e-last_name').value = e.last_name || '';
+      document.getElementById('e-email').value = e.email || '';
+      document.getElementById('e-start_date').value = e.start_date || '';
+      document.getElementById('e-title').value = e.title || '';
+      document.getElementById('e-department').value = e.department || '';
+      document.getElementById('e-manager_id').value = e.manager_id != null ? e.manager_id : '';
+      document.getElementById('e-salary').value = e.salary || '';
+      document.getElementById('edit-error').style.display = 'none';
+      document.getElementById('edit-modal').classList.add('open');
+    }
+
+    async function submitEdit() {
+      if (!currentEmployee) return;
+      const body = {};
+      ['first_name', 'last_name', 'email', 'start_date', 'title', 'department', 'salary'].forEach(f => {
+        const value = document.getElementById('e-' + f).value.trim() || null;
+        if (value !== currentEmployee[f]) body[f] = value;
+      });
+      const mid = document.getElementById('e-manager_id').value.trim();
+      const managerId = mid ? parseInt(mid) : null;
+      if (managerId !== currentEmployee.manager_id) body.manager_id = managerId;
+
+      const errEl = document.getElementById('edit-error');
+      errEl.style.display = 'none';
+      try {
+        const res = await fetch(`${API}/employees/${currentEmployee.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const data = await res.json();
+        if (!res.ok) { errEl.textContent = data.error || 'Failed to update'; errEl.style.display = 'block'; return; }
+        currentEmployee = data;
+        renderDetail(data);
+        closeModal('edit-modal');
+      } catch (ex) {
+        errEl.textContent = 'Network error'; errEl.style.display = 'block';
+      }
+    }
+
+    // ====== TERMINATE ======
+
+    async function confirmTerminate() {
+      if (!currentEmployee) return;
+      document.getElementById('terminate-name').textContent = currentEmployee.full_name;
+      document.getElementById('terminate-error').style.display = 'none';
+      document.getElementById('terminate-modal').classList.add('open');
+    }
+
+    async function terminateEmployee() {
+      if (!currentEmployee) return;
+      const errorEl = document.getElementById('terminate-error');
+      const submitBtn = document.getElementById('confirm-terminate-btn');
+      errorEl.style.display = 'none';
+      submitBtn.disabled = true;
+      try {
+        const res = await fetch(`${API}/employees/${currentEmployee.id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (!res.ok) {
+          errorEl.textContent = data.error || 'Failed to terminate';
+          errorEl.style.display = 'block';
+          return;
+        }
+        currentEmployee = data;
+        renderDetail(data);
+        closeModal('terminate-modal');
+      } catch (ex) {
+        errorEl.textContent = 'Network error';
+        errorEl.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    // ====== UTILITIES ======
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function esc(str) {
+      if (str == null) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+    });
+
+    // ====== INIT ======
+    loadEmployees();
+  </script>
+</body>
+
+</html>
